@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-Do</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f3f4f6;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #1f2937;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 640px;
+      margin: 24px auto;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    h1 { margin: 0; font-size: 26px; }
+    .user { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #6b7280; }
+    .user form { margin: 0; }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    button {
+      padding: 9px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary { background: #2563eb; color: #ffffff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-light { background: #e5e7eb; color: #1f2937; }
+    .btn-light:hover { background: #d1d5db; }
+    .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .btn-danger:hover { background: #fecaca; }
+    .add-form { display: flex; gap: 8px; margin: 20px 0 8px; }
+    .errors {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .errors ul { margin: 0; padding-left: 18px; }
+    ul.list { list-style: none; margin: 16px 0 0; padding: 0; }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      border-top: 1px solid #f3f4f6;
+    }
+    .item form { margin: 0; }
+    .item .edit-form { display: flex; flex: 1; gap: 8px; min-width: 0; }
+    .check {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 50%;
+      border: 2px solid #9ca3af;
+      background: #ffffff;
+      color: #ffffff;
+      font-size: 16px;
+    }
+    .item.done .check { background: #16a34a; border-color: #16a34a; }
+    .item.done input[type="text"] { text-decoration: line-through; color: #9ca3af; background: #f9fafb; }
+    .empty { text-align: center; color: #6b7280; padding: 32px 0 12px; font-size: 15px; }
+    @media (max-width: 520px) {
+      .item { flex-wrap: wrap; }
+      .item .edit-form { flex-basis: 100%; order: 3; }
+      .add-form { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top">
+      <h1>To-Do</h1>
+      <div class="user">
+        <span>Hi, <%= name %></span>
+        <form method="POST" action="/logout">
+          <button type="submit" class="btn-light">Log out</button>
+        </form>
+      </div>
+    </div>
+
+    <form class="add-form" method="POST" action="/todos/add" novalidate>
+      <input type="text" name="title" placeholder="What needs to be done?" value="<%= newTitle %>">
+      <button type="submit" class="btn-primary">Add</button>
+    </form>
+
+    <% if (errors.length > 0) { %>
+      <div class="errors">
+        <ul>
+          <% errors.forEach(function(e) { %>
+            <li><%= e %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+
+    <% if (todos.length === 0) { %>
+      <p class="empty">Nothing to do yet. Add your first task above.</p>
+    <% } else { %>
+      <ul class="list">
+        <% todos.forEach(function(t) { %>
+          <li class="item <%= t.is_done ? 'done' : '' %>">
+            <form method="POST" action="/todos/<%= t.todo_id %>/toggle">
+              <input type="hidden" name="is_done" value="<%= t.is_done ? 0 : 1 %>">
+              <button type="submit" class="check" title="Mark done / not done">&#10003;</button>
+            </form>
+
+            <form class="edit-form" method="POST" action="/todos/<%= t.todo_id %>/edit" novalidate>
+              <input type="text" name="title" value="<%= t.title %>">
+              <button type="submit" class="btn-light">Save</button>
+            </form>
+
+            <form method="POST" action="/todos/<%= t.todo_id %>/delete"
+                  onsubmit="return confirm('Are you sure you want to delete this to-do?');">
+              <button type="submit" class="btn-danger">Delete</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</body>
+</html>
