@@ -11,7 +11,7 @@ A small web app with sign-up, login and a personal to-do list. Every user sees a
 | Joudy Mohamed Aly | 2304050 |
 | Raneem Ahmed Ragab | 2304016 |
 
-**Who did what:** we worked on everything together (database design, back end, front end, validation, testing and this README), sitting side by side and splitting the files between us as we went. Both of us have commits in this repository.
+**Who did what:** we worked on everything together (database design, back end, front end, validation, testing and this README), sitting side by side and splitting the files between us as we went. Both of us have commits in this repository.Raneem also wrote and tested the register and login pages and checked the answers (a)-(d).
 
 ## 2. Technology
 
